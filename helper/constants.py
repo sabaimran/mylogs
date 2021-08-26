@@ -27,7 +27,7 @@ class Routine():
 class Menses():
     name = "menses"
     file_name = "menses.csv"
-    attributes = ["flow", "cramps", "mood", "nipple"]
+    attributes = ["flow", "cramps", "mood"]
 
 class Weight():
     name = "weight"

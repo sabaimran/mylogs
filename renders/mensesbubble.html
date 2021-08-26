@@ -76,7 +76,6 @@
 	var flow_data = [];
 	var cramps_data = [];
 	var mood_data = [];
-	var nipple_data = [];
 
 	d.forEach((item,index) => {
 	    if (item.flow > 0) {
@@ -89,10 +88,6 @@
 
 	    if (item.mood > 0) {
 		mood_data.push({ x: new Date(item.date), y: 3, r: item.mood });
-	    }
-
-	    if (item.nipple > 0) {
-		nipple_data.push({ x: new Date(item.date), y: 4, r: item.nipple });
 	    }
 	});
 

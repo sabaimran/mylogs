@@ -96,7 +96,7 @@ def get_menses_data():
     menses_input = [inputs.int_input(attribute) for attribute in constants.Menses.attributes]
     menses_input.insert(0, date)
 
-    ## date,flow,cramps,mood,nipple
+    ## date,flow,cramps,mood
     with open(menses_filepath,'a',newline='') as menses_file:
         writer = csv.writer(menses_file)
         writer.writerow(menses_input)
