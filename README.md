@@ -23,7 +23,7 @@ For running the script, I advise using a virtual environment before installing t
 
 ## Visualizing
 
-With some logs populated, run `node server.js` from root and navigate to `localhost:5000` in order to visualize the various data streams.
+I have created a very rudimentary web UI for visualizing the data. With some logs populated, run `node server.js` from root and navigate to `localhost:5000` in order to visualize the various data streams.
 
 Note that I have currently only built support for menses, routine, and weight data.
 
