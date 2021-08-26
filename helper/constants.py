@@ -20,7 +20,7 @@ class Inputs():
 class Routine():
     name = "routine"
     file_name = "routine.json"
-    activities = [ "workout", "meditate", "write", "code", "read", "art", "study" ]
+    activities = [ "workout", "meditate", "code", "read" ]
     header_instructions = "Type 'none' or 'n' or press enter if the entry was not completed today."
     overwrite_warning = "This entry already exists. You will overwrite its data. Do you wish to continue?"
 
