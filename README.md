@@ -29,6 +29,8 @@ Note that I have currently only built support for menses, routine, and weight da
 
 ## Usage
 
+You should be able to use this from any terminal where you can access `node` and `python`. I've used the script on Windows, Ubuntu, and Android clients. 
+
 The primary interaction mode that I have with the data entry interface is via my phone, using [Termux](https://termux.com/) for the actual data entry, and [Tasker](https://tasker.joaoapps.com/) for phone interactions with launching the tool. I find it to be light and easy enough to use on the small screen.
 
 # Feedback
