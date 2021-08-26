@@ -34,3 +34,7 @@ The primary interaction mode that I have with the data entry interface is via my
 # Feedback
 
 Send me feedback, comments, suggestions! I'm open to any and all commentary on how to make this system better and more streamlined. Over time, I want to extract intelligent inferences from this data to make my life a little smarter 🤨️.
+
+# Demo
+
+![A video demo of the data inputs Python CLI](./media/datainputs_demo.gif)
