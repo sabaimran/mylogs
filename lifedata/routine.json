@@ -1,4 +1,43 @@
 {
   "routine": [
+    {
+      "workout": {
+        "start_time": [
+          "2021-08-24T01:02:00"
+        ],
+        "stop_time": [
+          "2021-08-24T01:45:00"
+        ]
+      },
+      "meditate": {
+        "start_time": [
+          "2021-08-24T03:09:00"
+        ],
+        "stop_time": [
+          "2021-08-24T03:45:00"
+        ]
+      },
+      "write": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "code": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "read": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "art": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "study": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "date": "2021-08-24T00:00:00"
+    }
   ]
 }
