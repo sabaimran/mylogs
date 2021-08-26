@@ -16,9 +16,9 @@ class OperatingSystem(metaclass=abc.ABCMeta):
 class Android(OperatingSystem):
 
     def data_filepath():
-        return os.path.expanduser("~/scripts/dataentry/lifedata/{0}")
+        return os.path.expanduser("~/scripts/mylogs/lifedata/{0}")
     def repopath():
-        return os.path.expanduser("~/scripts/dataentry")
+        return os.path.expanduser("~/scripts/mylogs")
 
 class Windows(OperatingSystem):
 
@@ -30,7 +30,7 @@ class Windows(OperatingSystem):
 class Ubuntu(OperatingSystem):
 
     def data_filepath():
-        return os.path.expanduser("~/projects/personal-logs/dataentry/lifedata/{0}")
+        return os.path.expanduser("~/projects/personal-logs/mylogs/lifedata/{0}")
 
     def repopath():
         return "./"
