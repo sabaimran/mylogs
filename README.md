@@ -1,8 +1,8 @@
-﻿# Data Entry - Private, Personalized Logging via Python CLI 🌳️
+﻿# Private, Personalized Logging via Python CLI 🌳️
 
 The motivation behind this project is to formalize notekeeping of day-to-day activities and personal logs that I want to encourage participation in, or generally want to track. Free tools that offer this sort of capability are generally selling our data to data brokers, and I don't exactly want 3rd parties with access to the minute details of my life 😅️.
 
-Naturally, the activities can be amended over time, as the map of my life and habits change, but I do imagine there will be certain mainstays. In that vein, the tracked attributes should be trivial to amend. 
+Naturally, the activities can be amended over time, as the map of one's life and habits change, but I do imagine there will be certain mainstays. In that vein, the tracked attributes should be trivial to amend. 
 
 ## Setup
 
@@ -37,4 +37,10 @@ Send me feedback, comments, suggestions! I'm open to any and all commentary on h
 
 # Demo
 
-![A video demo of the data inputs Python CLI](./media/datainputs_demo.gif)
+## Command line interface
+
+![A video demo of the data inputs Python CLI](./media/demo_datainputs.gif)
+
+## Data Visualization Web UI
+
+![A video demo of the web UI for data visualization](./media/demo_webui.gif)
