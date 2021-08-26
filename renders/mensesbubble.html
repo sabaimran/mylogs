@@ -1,0 +1,204 @@
+<html>
+  <head>
+    <style>
+      body { background-color: #f0f7f1; font-family: "Courier New", Courier, monospace; }
+      table {
+          border-collapse: collapse;
+          width: 100%;
+      }
+      
+      th, td {
+          padding: 8px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+      }
+      
+      tr:hover {background-color:#eb9988;}
+      h1, h2, h3, a {margin:5px;padding:0;font-weight:normal;color:#555;font-weight:bold;}
+      h1 {font-size:3.5em; }
+      h2 {font-size:2.4em;}
+      h3 {font-size:4.0em;}
+    </style>
+    <title>Period Data with Toast</title>
+  </head>
+  <body>
+    <h3>Period Data!</h3>
+    <a href="/">Back home</a>
+    <div id="chart-area"/>
+  </body>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.chart/latest/tui-chart.min.css">
+  <script src="https://uicdn.toast.com/tui.chart/latest/tui-chart-all.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script type="text/javascript">
+
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+          
+    function friendlyDate(datetime) {
+        return datetime.getDate() + ' - ' + months[datetime.getMonth()];
+    }
+
+    // Grabbed from https://gist.github.com/jfreels/6814721
+    function tabulate(data,columns) {
+        var table = d3.select('body').append('table')
+		var thead = table.append('thead')
+		var tbody = table.append('tbody')
+
+		thead.append('tr')
+			.selectAll('th')
+			.data(columns)
+			.enter()
+			.append('th')
+			.text(function (d) { return d })
+
+		var rows = tbody.selectAll('tr')
+			.data(data)
+			.enter()
+			.append('tr')
+
+		var cells = rows.selectAll('td')
+			.data(function(row) {
+				return columns.map(function (column) {
+					return { column: column, value: row[column] }
+				})
+				})
+				.enter()
+				.append('td')
+				.text(function (d) { return d.value })
+
+			return table;
+    }
+    
+    var chart = tui.chart;
+    d3.csv("./data/menses.csv", d => {
+
+        tabulate(d, ['date','flow','cramps','mood']);
+        
+	var flow_data = [];
+	var cramps_data = [];
+	var mood_data = [];
+	var nipple_data = [];
+
+	d.forEach((item,index) => {
+	    if (item.flow > 0) {
+		flow_data.push({ x: new Date(item.date), y: 1, r: item.flow });
+	    }
+
+	    if (item.cramps > 0) {
+		cramps_data.push({ x: new Date(item.date), y: 2, r: item.cramps });
+	    }
+
+	    if (item.mood > 0) {
+		mood_data.push({ x: new Date(item.date), y: 3, r: item.mood });
+	    }
+
+	    if (item.nipple > 0) {
+		nipple_data.push({ x: new Date(item.date), y: 4, r: item.nipple });
+	    }
+	});
+
+	var container = document.getElementById('chart-area');
+
+	var data = { 
+	    series: [
+		{
+		    name: 'Flow',
+		    data: flow_data
+		},
+		{
+		    name: 'Cramps',
+		    data: cramps_data
+		},
+		{
+		    name: 'Mood',
+		    data: mood_data
+		}
+	    ]
+	};
+
+	var default_font_style = {
+            fontFamily: "Courier new",
+            color: "#FFFFFF"
+        };
+
+	var options = 
+	    {
+		chart: {
+		    width: window.innerWidth-50,
+		    height: 540,
+		    title: 'monthly flow'
+		},
+		yAxis: {
+		    title: 'features',
+		    min: 0
+		},
+		xAxis: {
+		    title: 'date',
+		    type: 'datetime',
+		    dateFormat: 'DD.MM.YY'
+		},
+		series: {
+		    showLabel: true, // whether show label or not
+		    allowSelect: true // whether allow select or not
+		},
+		legend: {
+		    align: 'bottom'
+		},
+		circleLegend: {
+		    visible: false
+		},
+                chartExportMenu: {
+                    visibile: false
+                },
+                tooltip: {
+                    template: (category, item, timestamp) => {
+                        console.log(item);
+                        return body = '<div style="background-color:hsla(216,17%,59%,0.75);padding:5px;border-radius:4px;width:215px;font-size:15px;font-family: Courier new">'
+                            + friendlyDate(new Date(parseInt(item.x))) + ': '
+                            + item.legend + ', '
+                            + item.r + '</div>';
+                    }
+                }
+	    };
+	
+	var theme = {
+	    chart: {
+		background: {
+		    color: '#000000',
+		    opacity: 0.8
+		},
+	    },
+	    title: default_font_style,
+	    xAxis: {
+		title: {
+		    fontFamily: "Courier new",
+		},
+		label: default_font_style,
+	    },
+	    yAxis: {
+		title: {
+		    fontFamily: "Courier new",
+		},
+		label: default_font_style,
+	    },
+	    series: {
+		colors: [
+		    '#6acca5', '#88beeb', '#bb88eb', '#eb9988'
+		]
+	    },
+	    plot: {
+	    	lineColor: '#DFDFDF',
+	    	background: '#4f7352'
+	    },
+	    legend: {
+      		label: default_font_style
+	    }
+	};
+	
+	tui.chart.registerTheme('fun', theme);
+	options.theme = 'fun';
+
+	tui.chart.bubbleChart(container, data, options);
+    });
+
+  </script>
+</html>

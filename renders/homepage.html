@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <style>
+      h1,p { margin: 2vh; font-weight:600; font-size:100px }
+      body { background-color: #f0f7f1; font-family: "Courier New", Courier, monospace; }
+      button { border: none; background-color: #b0f2ac; font-family: "Courier New", Courier, monospace; font-size: 300%; cursor: pointer; }
+      .grid-container {
+          display: grid;
+          grid-template-areas:
+              'button'
+                  'button'
+                  'button';
+          grid-gap: 30%;
+          padding: 2%;
+      }
+    </style>
+    <title>palm-tree</title>
+  </head>
+  <body>
+    <h1>Bienvenido!</h1>
+    <div class="grid-container">
+      <button id="routineButton">Routine</button>
+      <button id="dotButton">Period Data</button>
+      <button id="weightButton">Pounds</button>
+    </div>
+  </body>
+  <script>
+    var button = document.getElementById('routineButton');
+    button.onclick = function() {
+        location.assign('/routine');
+    }
+
+    var button = document.getElementById('dotButton');
+    button.onclick = function() {
+        location.assign('/menses');
+    }
+
+    var button = document.getElementById('weightButton');
+    button.onclick = function() {
+        location.assign('/weight');
+    }
+
+  </script>
+</html>

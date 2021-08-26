@@ -1,0 +1,408 @@
+<html>
+  <head>    
+    <title>Routine Data</title>
+  </head>
+  <body>
+    <h3>Routine Chart</h3>
+    <a href="/">Back home</a>
+    <figure class="highcharts-figure">
+      <p class="highcharts-description">
+        Monitoring activities since 01.04.2020. Filter dates below.
+      </p>
+      <input type="text" id="minDate" onkeyup="filterFunction()" placeholder="Min filter">
+      <input type="text" id="maxDate" onkeyup="filterFunction()" placeholder="Max filter">
+      <div id="container"></div>
+    </figure>
+    <ul></ul>
+    <style>
+      body {margin:0;padding:0;background:#f0f7f1;font-family:Consolas, monaco, monospace;font-size:15px;color:#555;}
+      h1, h2, h3, a {margin:5px;padding:0;font-weight:normal;color:#555;}
+      h1 {font-size:3.5em;}
+      h2 {font-size:2.4em;}
+      h3 {font-size:4.0em;}
+      p, ul, ol {margin-top:0;line-height:180%;}
+      input {margin-bottom:1.5em; padding: 8px; font-size: 1.2em;}
+
+      .highcharts-description {font-size: 1.5em;}
+    </style>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/xrange.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+      var chart, routine;
+
+      // By default, configure the chart to look at the last 30 days.
+      var minDate = new Date().setDate(new Date().getDate() - 30);
+      var maxDate = new Date();
+
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+      /* 
+       * Get minutes with leading 0s (e.g., 9 -> 09).
+       */
+      function minutesWithLeadingZeros(minutes) {
+          return (minutes < 10 ? '0': '') + minutes;
+      }
+
+      /*
+       *  Format the date into a friendly version 
+       * (e.g., Wed Apr 29 2020 00:00:00 GMT-0700 (Pacific Daylight Time) -> 29 April 2020).
+       */
+      function friendlyDate(datetime) {
+          return datetime.getDate() + ' ' + months[datetime.getMonth()] + ' ' + datetime.getUTCFullYear();
+      }
+
+      /* 
+       * Format UTC time from Jan 1, 1970 to a friendly value 
+       * (e.g., 81000000 -> 22:30). 
+       */
+      function friendlyTime(utcValue) {
+          return new Date(utcValue).getUTCHours() + ':'+ minutesWithLeadingZeros(new Date(utcValue).getUTCMinutes());
+      }
+
+      /*
+       * Using inputted parsed and organized data, 
+       * return a dictionary that will be used to render the chart.
+       */
+      function getSeriesData(activity_data) {
+          const seriesData = [];
+          for (var key in activity_data) {
+              seriesData.push({
+                  name: key.split('_').join(' '),
+                  data: activity_data[key],
+                  color: '#FF0000'
+              });
+          }
+
+          return seriesData;
+      }
+
+      /*
+       * This function is called whenever a user types into the input text boxes 
+       * at the bottom of the page. It parses the input, looking for a datetime.
+       * If a datetime is found that is different from the current min or the current max, 
+       * then update the chart. Otherwise don't change.
+       * This input expects the datetime to be of length 10 (e.g., yyyy-mm-dd).
+       */
+      function filterFunction() {
+          let minDateValue = document.getElementById('minDate').value;
+          let nextMinDate = minDateValue.length == 10 ? Date.parse(minDateValue) : null;
+          let updateMin = (nextMinDate && nextMinDate.valueOf() !== (minDate && minDate.valueOf()));
+                    
+    	  let maxDateValue = document.getElementById('maxDate').value;
+          let nextMaxDate = maxDateValue.length == 10 ? Date.parse(maxDateValue) : null;
+          let updateMax = nextMaxDate && nextMaxDate.valueOf() !== (maxDate && maxDate.valueOf());
+
+          if (updateMin) {
+              minDate = nextMinDate;
+          }
+
+          if (updateMax) {
+              maxDate = nextMaxDate;
+          }
+
+          if (updateMin || updateMax) {
+              parseDataAndRenderChart(routine);
+          }
+      }
+      
+      /*
+       * Given the routine data, this function will parse it into the expected cateogires
+       * and render the chart in an xrange series plot.
+       */
+      function parseDataAndRenderChart(routine) {
+          var categories = [];
+
+          // TODO Replace this with your activities.
+          const colors = {
+              read: '#2b908f',
+              write: '#90ee7e',
+              code: '#00accf',
+              meditate: '#7798BF',
+              workout: '#eeaaee',
+              art: '#55BF3B',
+              study: '#aaeeee'              
+          };
+
+          // TODO Replace this with your activities.
+          const activity_data = {
+              read: [],
+              write: [],
+              code: [],
+              meditate: [],
+              workout: [],
+              art: [],
+              study: []
+          };
+
+          for (i = 0; i < routine.length; i++) {
+              date = new Date(routine[i]['date']);
+              
+              if ((!minDate || minDate < date) && (!maxDate || date < maxDate))
+              {
+                  categories.push(friendlyDate(date));
+
+                  for (var activity in activity_data)
+                  {
+                      // Ensure there is an entry for this activity on this date.
+                      if (routine[i][activity])
+                      {
+                          // We can have multiple start and stop times. Retrive all of them for a particular activity on a given date.
+                          start_times = routine[i][activity]['start_time'];
+                          
+                          if (start_times.length > 0) {
+                              var idx = 0;
+
+                              while (idx >= 0) {
+                                  if (start_times[idx]) {
+                                      start_time = new Date(start_times[idx]);
+                                      stop_time = new Date(routine[i][activity]['stop_time'][idx]);
+                                      
+                                      // Expected data is in UTC format, so convert before pushing.
+                                      activity_data[activity].push({
+                                          x: Date.UTC(1970, 0, 1, start_time.getHours(), start_time.getMinutes(), 0),
+                                          x2: Date.UTC(1970, 0, 1, stop_time.getHours(), stop_time.getMinutes(), 0),
+                                          y: categories.length-1,
+                                          color: colors[activity]
+                                      });
+
+                                      idx+=1;
+                                      
+                                  } else {
+                                      idx = -1;
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+          renderChart(activity_data, categories);
+      }
+
+      /*
+       * Given the appropriate activity data and categories, this function will 
+       * render the data in an xrange chart with an inverted axis such that the 
+       * y-axis contains the time of day and the x-axis contains the date (aka the category)
+       */
+      function renderChart(activity_data, categories) {
+          chart = Highcharts.chart('container', 
+                           {
+                               chart: {
+                                   inverted: true,
+                                   height: window.innerHeight*0.8,
+                                   type: 'xrange',
+                               },
+                              
+                               title: {
+                                   text: 'What is Saba up to?'
+                               },
+
+                               plotOptions: {
+                                   series: {
+                                       grouping: false,
+                                       groupPadding: 0
+                                   }
+                               },
+
+                               xAxis: {
+                                   type: 'datetime',
+                                   title: {
+                                       text: "Time of day"
+                                   },
+                                   dateTimeLabelFormats: {
+                                       day: '%H:%M'
+                                   }
+                               },
+
+                               yAxis: {
+                                   type: 'datetime',
+                                   title: {
+                                       text: "Date"
+                                   },
+                                   categories: categories,
+                               },
+
+                               legend: {
+                                   enabled: true
+                               },
+
+                               series: getSeriesData(activity_data),                                   
+                               
+                               tooltip: {
+                                   shared: false,
+                                   formatter: function() {
+                                       console.log(this.point);
+                                       return '<b>'+ this.series.name  +'</b><br/>'+
+                                           categories[this.y] +'<br/> '+ 
+                                           friendlyTime(this.point.x)
+                                           + '-' +
+                                           friendlyTime(this.point.x2)
+                                       '<br/>'+
+                                           'Total: '+ this.point;
+                                   }
+                               },
+                               
+                           });
+          
+      }
+
+      // Retrieve the JSON file with all of the routine data.
+      $.getJSON('./data/routine.json', d => {
+          routine = d['routine'];
+
+          parseDataAndRenderChart(routine);
+      });
+      
+          
+      
+      // Set theme information.
+      Highcharts.theme = {
+          chart: {
+              backgroundColor: 'rgb(96, 96, 96)',
+              borderWidth: 0,
+              borderRadius: 0,
+              plotBackgroundColor: null,
+              plotShadow: false,
+              plotBorderWidth: 0
+          },
+          title: {
+              style: {
+                  color: '#FFF',
+                  font: '16px Consolas, monaco, monospace,' +
+                      ' Verdana, Arial, Helvetica, sans-serif'
+              }
+          },
+          subtitle: {
+              style: {
+                  color: '#DDD',
+                  font: '12px Consolas, monaco, monospace,' +
+                      ' Verdana, Arial, Helvetica, sans-serif'
+              }
+          },
+          xAxis: {
+              gridLineWidth: 0,
+              lineColor: '#999',
+              tickColor: '#999',
+              labels: {
+                  style: {
+                      color: '#999',
+                      fontWeight: 'bold',
+                      font: 'bold 12px Consolas, monaco, monospace,' +
+                          ' Verdana, Arial, Helvetica, sans-serif'
+                  }
+              },
+              title: {
+                  style: {
+                      color: '#AAA',
+                      font: 'bold 12px Consolas, monaco, monospace,' +
+                          ' Verdana, Arial, Helvetica, sans-serif'
+                  }
+              }
+          },
+          yAxis: {
+              alternateGridColor: null,
+              minorTickInterval: null,
+              gridLineColor: 'rgba(255, 255, 255, .1)',
+              minorGridLineColor: 'rgba(255,255,255,0.07)',
+              lineWidth: 0,
+              tickWidth: 0,
+              labels: {
+                  style: {
+                      color: '#999',
+                      fontWeight: 'bold',
+                      font: 'bold 12px Consolas, monaco, monospace,' +
+                          ' Verdana, Arial, Helvetica, sans-serif'
+                  }
+              },
+              title: {
+                  style: {
+                      color: '#AAA',
+                      font: 'bold 12px Consolas, monaco, monospace,' +
+                          ' Verdana, Arial, Helvetica, sans-serif'
+                  }
+              }
+          },
+          legend: {
+              backgroundColor: 'rgba(48, 48, 48, 0.8)',
+              itemStyle: {
+                  color: '#CCC'
+              },
+              itemHoverStyle: {
+                  color: '#FFF'
+              },
+              itemHiddenStyle: {
+                  color: '#333'
+              },
+              title: {
+                  style: {
+                      color: '#E0E0E0'
+                  }
+              }
+          },
+          labels: {
+              style: {
+                  color: '#CCC'
+              }
+          },
+          tooltip: {
+              backgroundColor: {
+                  linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                  stops: [
+                      [0, 'rgba(96, 96, 96, .8)'],
+                      [1, 'rgba(16, 16, 16, .8)']
+                  ]
+              },
+              borderWidth: 0,
+              style: {
+                  color: '#FFF'
+              }
+          },
+          plotOptions: {
+              series: {
+                  dataLabels: {
+                      color: '#444'
+                  },
+                  nullColor: '#444444'
+              },
+              line: {
+                  dataLabels: {
+                      color: '#CCC'
+                  },
+                  marker: {
+                      lineColor: '#333'
+                  }
+              },
+              spline: {
+                  marker: {
+                      lineColor: '#333'
+                  }
+              },
+              scatter: {
+                  marker: {
+                      lineColor: '#333'
+                  }
+              },
+              candlestick: {
+                  lineColor: 'white'
+              }
+          },
+          toolbar: {
+              itemStyle: {
+                  color: '#CCC'
+              }
+          }
+      };
+
+      // Apply the theme
+      Highcharts.setOptions(Highcharts.theme);
+      </script>
+    <hr />
+  </body>
+</html>

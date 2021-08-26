@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <style>
+      body { background-color: #f0f7f1; font-family: "Courier New", Courier, monospace; }
+      h1, h2, h3, a {margin:5px;padding:0;color:#555;font-weight:bold;}
+      h3 {font-size:4.0em;}
+    </style>
+    <title>Thiccness</title>
+  </head>
+  <body>
+    <h1>Gravitas</h1>
+    <a href="/">Back home</a>
+    <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+      <canvas id="myChart"></canvas>
+    </div>
+  </body>
+  <script>
+    
+    dates = [];
+    weights = [];
+
+    // Get the weight data and package the dates and weights into separate arrays.
+    d3.csv("./data/weights.csv", d => {
+        d.forEach((item,index) => {
+            dates.push(new Date(item.date));
+            weights.push(item.weight);
+        });
+    });
+
+    Chart.defaults.global.defaultFontFamily = "'Courier New', 'Courier', 'monospace'";
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'lbs',
+                data: weights,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(66, 206, 245, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            onResize: function(chart, size) {
+                chart.canvas.parentNode.style.width = window.innerWidth*0.98;
+                chart.canvas.parentNode.style.height = window.innerHeight*0.9;
+                chart.update();
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        suggestedMin: 145,
+                        stepSize: 5
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        displayFormats: {
+                            quarter: 'MMM YYYY'
+                        }
+                    }
+                }]
+            }
+        }
+    });
+
+    myChart.canvas.parentNode.style.height = window.innerHeight*0.9;
+    myChart.canvas.parentNode.style.width = window.innerWidth*0.98;
+  </script>
+</html>
