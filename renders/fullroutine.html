@@ -255,7 +255,7 @@
 
       // Retrieve the JSON file with all of the routine data.
       $.getJSON('./data/routine.json', d => {
-          routine = d['routine'];
+          routine = d['index'];
 
           parseDataAndRenderChart(routine);
       });

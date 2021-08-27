@@ -1,0 +1,72 @@
+{
+  "index": [
+    {
+      "workout": {
+        "start_time": [
+          "2021-08-24T13:00:00"
+        ],
+        "stop_time": [
+          "2021-08-24T13:30:00"
+        ]
+      },
+      "meditate": {
+        "start_time": [
+          "2021-08-24T06:00:00",
+          "2021-08-24T17:00:00"
+        ],
+        "stop_time": [
+          "2021-08-24T06:15:00",
+          "2021-08-24T17:45:00"
+        ]
+      },
+      "code": {
+        "start_time": [
+          "2021-08-24T21:00:00"
+        ],
+        "stop_time": [
+          "2021-08-24T22:45:00"
+        ]
+      },
+      "read": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "date": "2021-08-24T00:00:00"
+    },
+    {
+      "workout": {
+        "start_time": [
+          "2021-08-25T12:00:00"
+        ],
+        "stop_time": [
+          "2021-08-25T12:40:00"
+        ]
+      },
+      "meditate": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "study": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "code": {
+        "start_time": [
+          "2021-08-25T20:00:00"
+        ],
+        "stop_time": [
+          "2021-08-25T22:50:00"
+        ]
+      },
+      "read": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "write": {
+        "start_time": [],
+        "stop_time": []
+      },
+      "date": "2021-08-25T00:00:00"
+    }
+  ]
+}

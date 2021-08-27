@@ -15,3 +15,7 @@ def error(error):
 # Styling to print welcome.
 def welcome(welcome):
     print(colored(welcome,"cyan"))
+
+# Styling to print subtitle.
+def subtitle(subtitle):
+    print(colored(subtitle, "yellow"))

@@ -1,0 +1,27 @@
+---
+routine:
+  title: ROUTINE DATA
+  filename: routine.json
+  active:
+    - workout
+    - meditate
+    - study
+    - code
+    - read
+    - write
+  inactive:
+    - gardening
+    - latin
+    - art
+menses:
+  title: MENSES
+  filename: menses.csv
+  active:
+    - flow
+    - cramps
+    - mood
+weight:
+  title: WEIGHT
+  filename: weights.csv
+  active:
+    - weight
